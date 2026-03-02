@@ -16,6 +16,7 @@ A rebuilt version of your college project based on the resume description.
 - Browse websites from command
 - Play music via YouTube search
 - Open local applications
+- Send emails through SMTP via interactive workflow (`send email`)
 - Send emails through SMTP (available via `SkillSet.send_mail`)
 
 ## Project Structure
@@ -76,6 +77,31 @@ Then enter commands like:
 - `browse github.com`
 - `play relaxing piano`
 - `open calculator`
+- `send email`
+- `exit`
+
+## Email Workflow
+
+When you say/type `send email`, the assistant asks for:
+
+- SMTP server (example: `smtp.gmail.com`)
+- SMTP port (example: `587`)
+- Sender email username
+- Sender email password/app password
+- Recipient email
+- Subject
+- Body
+
+In voice mode, password capture is blocked by default for safety. To allow full voice email flow:
+
+```bash
+ALLOW_VOICE_EMAIL_PASSWORD=1 python3 main.py --mode voice
+```
+
+## Notes
+
+- If voice dependencies are missing, the assistant automatically falls back to CLI mode.
+- You can later connect the weather skill to a live API for real forecasts.
 - `exit`
 
 ## Notes
