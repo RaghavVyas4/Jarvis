@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .skills import SkillResult, SkillSet
+from .voice import VoiceInterface
 
 
 @dataclass
@@ -14,6 +15,7 @@ class ParsedCommand:
 
 
 class VirtualVoiceAssistant:
+    """Simple assistant with CLI and voice I/O modes."""
     """Simple command-driven assistant with optional voice I/O integration."""
 
     def __init__(self) -> None:
@@ -59,6 +61,7 @@ class VirtualVoiceAssistant:
         )
 
     def run_cli(self) -> None:
+        print("Virtual Voice Assistant is running in CLI mode. Type 'exit' to quit.")
         print("Virtual Voice Assistant is running. Type 'exit' to quit.")
         while True:
             user_input = input("You: ").strip()
@@ -68,3 +71,25 @@ class VirtualVoiceAssistant:
 
             result = self.handle(user_input)
             print(f"Assistant: {result.message}")
+
+    def run_voice(self) -> None:
+        voice = VoiceInterface()
+        if not voice.status.ready:
+            print(f"Voice mode unavailable: {voice.status.message}")
+            print("Falling back to CLI mode.")
+            self.run_cli()
+            return
+
+        voice.speak("Virtual Voice Assistant is running in voice mode. Say exit to stop.")
+
+        while True:
+            heard = voice.listen()
+            if not heard:
+                continue
+
+            if heard.lower() in {"exit", "quit", "stop"}:
+                voice.speak("Goodbye!")
+                break
+
+            result = self.handle(heard)
+            voice.speak(result.message)
