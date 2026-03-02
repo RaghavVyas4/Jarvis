@@ -1,0 +1,4 @@
+# Core package intentionally has no mandatory third-party dependencies.
+# Optional for real voice interaction:
+# SpeechRecognition==3.10.4
+# pyttsx3==2.98
