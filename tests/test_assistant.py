@@ -2,6 +2,7 @@ import io
 import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
+import unittest
 
 from assistant.core import VirtualVoiceAssistant
 
