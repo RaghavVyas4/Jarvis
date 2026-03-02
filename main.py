@@ -25,3 +25,9 @@ if __name__ == "__main__":
         assistant.run_voice()
     else:
         assistant.run_cli()
+from assistant import VirtualVoiceAssistant
+
+
+if __name__ == "__main__":
+    assistant = VirtualVoiceAssistant()
+    assistant.run_cli()

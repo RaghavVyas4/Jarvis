@@ -16,6 +16,7 @@ class ParsedCommand:
 
 class VirtualVoiceAssistant:
     """Simple assistant with CLI and voice I/O modes."""
+    """Simple command-driven assistant with optional voice I/O integration."""
 
     def __init__(self) -> None:
         self.skills = SkillSet()
@@ -61,6 +62,7 @@ class VirtualVoiceAssistant:
 
     def run_cli(self) -> None:
         print("Virtual Voice Assistant is running in CLI mode. Type 'exit' to quit.")
+        print("Virtual Voice Assistant is running. Type 'exit' to quit.")
         while True:
             user_input = input("You: ").strip()
             if user_input.lower() in {"exit", "quit"}:
