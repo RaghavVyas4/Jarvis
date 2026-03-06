@@ -125,6 +125,11 @@ class SkillSet:
             valid = ", ".join(sorted(self.SMTP_SECURITY_MODES))
             return SkillResult(False, f"SMTP security must be one of: {valid}.")
 
+        if mode not in {"auto", "starttls", "ssl", "none"}:
+            return SkillResult(False, "SMTP security must be one of: auto, starttls, ssl, none.")
+
+    ) -> SkillResult:
+        """Send an email via SMTP."""
         msg = EmailMessage()
         msg["From"] = username
         msg["To"] = to
@@ -150,3 +155,12 @@ class SkillSet:
             return SkillResult(False, f"Failed to send email ({mode} mode): {exc}")
 
         return SkillResult(True, f"Email sent successfully to {to}.")
+        try:
+            with smtplib.SMTP(smtp_server, port, timeout=10) as server:
+                server.starttls()
+                server.login(username, password)
+                server.send_message(msg)
+        except Exception as exc:
+            return SkillResult(False, f"Failed to send email: {exc}")
+
+        return SkillResult(True, "Email sent successfully.")
