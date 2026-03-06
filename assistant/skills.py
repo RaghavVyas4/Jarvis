@@ -35,6 +35,7 @@ class SkillSet:
         "divide": operator.truediv,
         "power": operator.pow,
     }
+    SMTP_SECURITY_MODES = {"auto", "starttls", "ssl", "none"}
 
     def arithmetic(self, expression: str) -> SkillResult:
         """Solve simple arithmetic commands like 'add 3 and 4'."""
@@ -120,6 +121,10 @@ class SkillSet:
         security values: auto, starttls, ssl, none.
         """
         mode = security.strip().lower()
+        if mode not in self.SMTP_SECURITY_MODES:
+            valid = ", ".join(sorted(self.SMTP_SECURITY_MODES))
+            return SkillResult(False, f"SMTP security must be one of: {valid}.")
+
         if mode not in {"auto", "starttls", "ssl", "none"}:
             return SkillResult(False, "SMTP security must be one of: auto, starttls, ssl, none.")
 
