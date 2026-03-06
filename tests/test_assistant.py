@@ -5,6 +5,9 @@ from unittest.mock import patch
 
 from assistant.core import VirtualVoiceAssistant
 from assistant.skills import SkillSet
+import unittest
+
+from assistant.core import VirtualVoiceAssistant
 
 
 class AssistantTests(unittest.TestCase):
@@ -99,6 +102,8 @@ class AssistantTests(unittest.TestCase):
         smtp_instance = mock_smtp_ssl.return_value.__enter__.return_value
         smtp_instance.login.assert_called_once_with("sender@example.com", "secret")
         smtp_instance.send_message.assert_called_once()
+
+        )
 
     @patch("builtins.input", side_effect=["quit"])
     @patch("assistant.core.VoiceInterface")

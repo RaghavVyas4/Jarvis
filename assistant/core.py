@@ -6,6 +6,7 @@ import getpass
 import os
 from dataclasses import dataclass
 from typing import Callable
+from dataclasses import dataclass
 
 from .skills import SkillResult, SkillSet
 from .voice import VoiceInterface
@@ -19,6 +20,7 @@ class ParsedCommand:
 
 class VirtualVoiceAssistant:
     """Simple assistant with CLI and voice I/O modes."""
+    """Simple command-driven assistant with optional voice I/O integration."""
 
     def __init__(self) -> None:
         self.skills = SkillSet()
@@ -104,6 +106,15 @@ class VirtualVoiceAssistant:
         print("Virtual Voice Assistant is running in CLI mode. Type 'exit' to quit.")
         print("Tip: type 'send email' to start the email workflow.")
 
+
+        return SkillResult(
+            False,
+            "I can help with arithmetic, weather, headlines, browsing, playing music, and opening apps.",
+        )
+
+    def run_cli(self) -> None:
+        print("Virtual Voice Assistant is running in CLI mode. Type 'exit' to quit.")
+        print("Virtual Voice Assistant is running. Type 'exit' to quit.")
         while True:
             user_input = input("You: ").strip()
             if user_input.lower() in {"exit", "quit"}:
@@ -115,6 +126,7 @@ class VirtualVoiceAssistant:
                 result = self._send_email_interactive(self._cli_ask)
             else:
                 result = self.handle(user_input)
+            result = self.handle(user_input)
             print(f"Assistant: {result.message}")
 
     def run_voice(self) -> None:
@@ -131,6 +143,7 @@ class VirtualVoiceAssistant:
 
         voice.speak("Virtual Voice Assistant is running in voice mode. Say exit to stop.")
         voice.speak("Say send email to compose and send an email.")
+        voice.speak("Virtual Voice Assistant is running in voice mode. Say exit to stop.")
 
         while True:
             heard = voice.listen()
@@ -151,4 +164,5 @@ class VirtualVoiceAssistant:
                 result = self._send_email_interactive(voice_ask)
             else:
                 result = self.handle(heard)
+            result = self.handle(heard)
             voice.speak(result.message)
