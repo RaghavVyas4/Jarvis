@@ -91,6 +91,7 @@ When you say/type `send email`, the assistant asks for:
 - Recipient email
 - Subject
 - Body
+- SMTP security mode: `auto`, `starttls`, `ssl`, or `none` (default: `auto`)
 
 In voice mode, password capture is blocked by default for safety. To allow full voice email flow:
 

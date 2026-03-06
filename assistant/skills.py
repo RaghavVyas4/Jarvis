@@ -7,6 +7,7 @@ import math
 import operator
 import os
 import smtplib
+import ssl
 import subprocess
 import webbrowser
 from dataclasses import dataclass
@@ -112,6 +113,16 @@ class SkillSet:
         to: str,
         subject: str,
         body: str,
+        security: str = "auto",
+    ) -> SkillResult:
+        """Send an email via SMTP.
+
+        security values: auto, starttls, ssl, none.
+        """
+        mode = security.strip().lower()
+        if mode not in {"auto", "starttls", "ssl", "none"}:
+            return SkillResult(False, "SMTP security must be one of: auto, starttls, ssl, none.")
+
     ) -> SkillResult:
         """Send an email via SMTP."""
         msg = EmailMessage()
@@ -120,6 +131,25 @@ class SkillSet:
         msg["Subject"] = subject
         msg.set_content(body)
 
+        context = ssl.create_default_context()
+
+        try:
+            if mode == "ssl" or (mode == "auto" and port == 465):
+                with smtplib.SMTP_SSL(smtp_server, port, timeout=15, context=context) as server:
+                    server.login(username, password)
+                    server.send_message(msg)
+            else:
+                with smtplib.SMTP(smtp_server, port, timeout=15) as server:
+                    server.ehlo()
+                    if mode == "starttls" or (mode == "auto" and port != 25):
+                        server.starttls(context=context)
+                        server.ehlo()
+                    server.login(username, password)
+                    server.send_message(msg)
+        except Exception as exc:
+            return SkillResult(False, f"Failed to send email ({mode} mode): {exc}")
+
+        return SkillResult(True, f"Email sent successfully to {to}.")
         try:
             with smtplib.SMTP(smtp_server, port, timeout=10) as server:
                 server.starttls()

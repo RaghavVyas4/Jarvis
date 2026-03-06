@@ -2,6 +2,9 @@ import io
 import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
+
+from assistant.core import VirtualVoiceAssistant
+from assistant.skills import SkillSet
 import unittest
 
 from assistant.core import VirtualVoiceAssistant
@@ -38,6 +41,7 @@ class AssistantTests(unittest.TestCase):
             "to@example.com",
             "Project Update",
             "Hello from assistant",
+            "starttls",
         ])
 
         def fake_ask(_prompt: str, _is_secret: bool) -> str | None:
@@ -57,6 +61,48 @@ class AssistantTests(unittest.TestCase):
             to="to@example.com",
             subject="Project Update",
             body="Hello from assistant",
+            security="starttls",
+        )
+
+    @patch("assistant.skills.smtplib.SMTP")
+    def test_send_mail_starttls_mode(self, mock_smtp):
+        skills = SkillSet()
+        result = skills.send_mail(
+            smtp_server="smtp.example.com",
+            port=587,
+            username="sender@example.com",
+            password="secret",
+            to="to@example.com",
+            subject="Hello",
+            body="Body",
+            security="starttls",
+        )
+
+        self.assertTrue(result.success)
+        smtp_instance = mock_smtp.return_value.__enter__.return_value
+        smtp_instance.starttls.assert_called_once()
+        smtp_instance.login.assert_called_once_with("sender@example.com", "secret")
+        smtp_instance.send_message.assert_called_once()
+
+    @patch("assistant.skills.smtplib.SMTP_SSL")
+    def test_send_mail_ssl_mode(self, mock_smtp_ssl):
+        skills = SkillSet()
+        result = skills.send_mail(
+            smtp_server="smtp.example.com",
+            port=465,
+            username="sender@example.com",
+            password="secret",
+            to="to@example.com",
+            subject="Hello",
+            body="Body",
+            security="ssl",
+        )
+
+        self.assertTrue(result.success)
+        smtp_instance = mock_smtp_ssl.return_value.__enter__.return_value
+        smtp_instance.login.assert_called_once_with("sender@example.com", "secret")
+        smtp_instance.send_message.assert_called_once()
+
         )
 
     @patch("builtins.input", side_effect=["quit"])

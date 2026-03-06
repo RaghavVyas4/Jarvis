@@ -76,6 +76,7 @@ class VirtualVoiceAssistant:
         receiver = ask("Recipient email", False) or ""
         subject = ask("Email subject", False) or ""
         body = ask("Email body", False) or ""
+        security = (ask("SMTP security (auto/starttls/ssl/none)", False) or "auto").lower()
 
         if not all([smtp_server, port_text, username, password, receiver, subject, body]):
             return SkillResult(False, "Email cancelled because one or more required fields were empty.")
@@ -93,6 +94,7 @@ class VirtualVoiceAssistant:
             to=receiver,
             subject=subject,
             body=body,
+            security=security,
         )
 
     def _cli_ask(self, prompt: str, is_secret: bool) -> str | None:
