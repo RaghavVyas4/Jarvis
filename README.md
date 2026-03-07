@@ -6,6 +6,10 @@ A rebuilt version of your college project with **real voice commands** and **voi
 
 - 🎙️ Voice command input through microphone
 - 🔊 Spoken responses through speakers
+A rebuilt version of your college project based on the resume description.
+
+## Features
+
 - Arithmetic calculations from natural commands (`add 10 and 5`, `divide 21 by 3`)
 - Weather forecast notifications (mock response that is easy to replace with an API)
 - Read newspapers/headlines by opening Google News
@@ -13,6 +17,7 @@ A rebuilt version of your college project with **real voice commands** and **voi
 - Play music via YouTube search
 - Open local applications
 - Send emails through SMTP via interactive workflow (`send email`)
+- Send emails through SMTP (available via `SkillSet.send_mail`)
 
 ## Project Structure
 
@@ -23,6 +28,7 @@ A rebuilt version of your college project with **real voice commands** and **voi
 │   ├── core.py
 │   ├── skills.py
 │   └── voice.py
+│   └── skills.py
 ├── tests/
 │   └── test_assistant.py
 ├── main.py
@@ -44,6 +50,8 @@ pip install -r requirements.txt
 
 ### Voice mode (default)
 
+## Run
+
 ```bash
 python3 main.py
 ```
@@ -61,6 +69,7 @@ python3 main.py --mode cli
 ```
 
 ## Example Commands
+Then enter commands like:
 
 - `add 20 and 22`
 - `weather in delhi`
@@ -90,20 +99,20 @@ In voice mode, password capture is blocked by default for safety. To allow full 
 ALLOW_VOICE_EMAIL_PASSWORD=1 python3 main.py --mode voice
 ```
 
+## Notes
 
-## Troubleshooting
-
-If you still see `SyntaxError: unmatched ')'` while running `main.py`, you are likely executing a stale copy of the repo.
-
-Run from the project root and clear bytecode caches:
-
-```bash
-find . -type d -name '__pycache__' -prune -exec rm -rf {} +
-python3 -m py_compile main.py assistant/*.py
-python3 main.py --mode cli
-```
+- If voice dependencies are missing, the assistant automatically falls back to CLI mode.
+- You can later connect the weather skill to a live API for real forecasts.
+- `exit`
 
 ## Notes
 
 - If voice dependencies are missing, the assistant automatically falls back to CLI mode.
 - You can later connect the weather skill to a live API for real forecasts.
+
+Type `exit` to quit.
+
+## Notes
+
+- This rebuild is intentionally modular so you can extend it with speech recognition later.
+- If you want full voice I/O, uncomment and install optional packages from `requirements.txt`.

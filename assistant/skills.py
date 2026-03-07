@@ -37,12 +37,6 @@ class SkillSet:
     }
     SMTP_SECURITY_MODES = {"auto", "starttls", "ssl", "none"}
 
-    def _normalize_security_mode(self, security: str) -> str | None:
-        mode = security.strip().lower()
-        if mode in self.SMTP_SECURITY_MODES:
-            return mode
-        return None
-
     def arithmetic(self, expression: str) -> SkillResult:
         """Solve simple arithmetic commands like 'add 3 and 4'."""
         tokens = expression.lower().replace("?", "").split()
@@ -126,11 +120,16 @@ class SkillSet:
 
         security values: auto, starttls, ssl, none.
         """
-        mode = self._normalize_security_mode(security)
-        if mode is None:
+        mode = security.strip().lower()
+        if mode not in self.SMTP_SECURITY_MODES:
             valid = ", ".join(sorted(self.SMTP_SECURITY_MODES))
             return SkillResult(False, f"SMTP security must be one of: {valid}.")
 
+        if mode not in {"auto", "starttls", "ssl", "none"}:
+            return SkillResult(False, "SMTP security must be one of: auto, starttls, ssl, none.")
+
+    ) -> SkillResult:
+        """Send an email via SMTP."""
         msg = EmailMessage()
         msg["From"] = username
         msg["To"] = to
@@ -156,3 +155,12 @@ class SkillSet:
             return SkillResult(False, f"Failed to send email ({mode} mode): {exc}")
 
         return SkillResult(True, f"Email sent successfully to {to}.")
+        try:
+            with smtplib.SMTP(smtp_server, port, timeout=10) as server:
+                server.starttls()
+                server.login(username, password)
+                server.send_message(msg)
+        except Exception as exc:
+            return SkillResult(False, f"Failed to send email: {exc}")
+
+        return SkillResult(True, "Email sent successfully.")
