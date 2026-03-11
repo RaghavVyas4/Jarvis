@@ -1,0 +1,7 @@
+psutil
+pyttsx3
+requests
+SpeechRecognition
+wikipedia
+playsound==1.2.2
+PyAudio
